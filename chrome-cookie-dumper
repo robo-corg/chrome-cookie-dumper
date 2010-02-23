@@ -1,0 +1,22 @@
+#!/opt/local/bin/python
+
+import os
+import sys
+import sqlite3
+from cookielib import Cookie
+
+source_file_name = sys.argv[1]
+
+conn = sqlite3.connect(source_file_name)
+
+c = conn.cursor()
+
+# Create table
+c.execute('SELECT host_key, path, secure, expires_utc, name, value FROM cookies')
+
+for row in c:
+    cookie = list(row)
+    cookie[2] = cookie[2] != 0
+    cookie = cookie[:1] + [False] + cookie[1:]
+    cookie = map(str,cookie)
+    print "\t".join(cookie)
